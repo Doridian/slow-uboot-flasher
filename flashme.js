@@ -1,9 +1,6 @@
-const FILENAME = './upgrade-1.0.1.bin';
-const COMPORT = 'COM8';
-
 const fs = require('fs');
 const SerialPort = require('serialport');
-const port = new SerialPort(COMPORT, {
+const port = new SerialPort('COM8', {
   baudRate: 115200,
   dataBits: 8,
   parity: 'none',
@@ -17,7 +14,7 @@ const port = new SerialPort(COMPORT, {
 
 console.log('Prepping FW...');
 
-const file = fs.readFileSync(FILENAME);
+const file = fs.readFileSync('./upgrade-1.0.1.bin');
 
 const fileData = [];
 
@@ -70,7 +67,10 @@ port.on('data', (data) => {
             port.write(`cp.b $loadaddr $firmware_addr ${firmware_size}\n`);
             lineNo = -3;
         } else if (lineNo === -3) {
-            port.close();
+            port.write('reset\n', () => port.close());
+            lineNo = -4;
+        } else if (lineNo == -4) {
+            console.log('Complete...');
         } else {
             console.error('\nINVALID\n');
             process.exit(1);
