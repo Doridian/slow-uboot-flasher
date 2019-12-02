@@ -1,6 +1,9 @@
+const FILENAME = './upgrade-1.0.1.bin';
+const COMPORT = 'COM8';
+
 const fs = require('fs');
 const SerialPort = require('serialport');
-const port = new SerialPort('COM8', {
+const port = new SerialPort(COMPORT, {
   baudRate: 115200,
   dataBits: 8,
   parity: 'none',
@@ -14,7 +17,7 @@ const port = new SerialPort('COM8', {
 
 console.log('Prepping FW...');
 
-const file = fs.readFileSync('./upgrade-1.0.1.bin');
+const file = fs.readFileSync(FILENAME);
 
 const fileData = [];
 
