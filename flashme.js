@@ -36,11 +36,11 @@ for (let i = 0; i < file.byteLength; i += 4) {
 
 const firmware_size = `0x${file.byteLength.toString(16)}`;
 
-console.log(`FW prepared. Size = ${firmware_size}. Begin FLASH!`);
+console.log(`FW prepared. Size = ${firmware_size}. Begin FLASH! (Plug in target NOW)`);
 
 let pokeInternal = setInterval(() => { port.write('.\n'); }, 5000);
 
-let lineNo = 0;
+let lineNo = -5;
 
 let lastData = '';
 let curData = '';
@@ -61,8 +61,9 @@ port.on('data', (data) => {
             pokeInternal = undefined;
         }
 
-        if (lineNo === 0) {
+        if (lineNo === -5) {
             port.write('mm.l $loadaddr\n');
+            lineNo = 0;
         } else if (lineNo === -1) {
             port.write(`erase $firmware_addr +${firmware_size}\n`);
             lineNo = -2;
